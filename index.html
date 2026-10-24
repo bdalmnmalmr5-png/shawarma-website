@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#b3261e">
+<title>شاورما الشام | اطلب الآن</title>
+<style>
+  :root{
+    --red:#b3261e;
+    --red-dark:#8a1b15;
+    --gold:#f2a900;
+    --cream:#fff8ec;
+    --ink:#2b1d16;
+    --card:#ffffff;
+    --green:#25d366;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic","Droid Arabic Naskh",Arial,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.6;
+    padding-bottom:80px;
+  }
+  header{
+    background:linear-gradient(160deg,var(--red),var(--red-dark));
+    color:#fff;
+    text-align:center;
+    padding:42px 18px 36px;
+    border-bottom:6px solid var(--gold);
+  }
+  header .emoji{font-size:54px;display:block}
+  header h1{font-size:34px;margin-top:6px;letter-spacing:.5px}
+  header p{opacity:.92;margin-top:6px;font-size:16px}
+  .hero-btn{
+    display:inline-block;margin-top:18px;background:var(--gold);color:var(--ink);
+    padding:12px 28px;border-radius:30px;font-weight:700;text-decoration:none;font-size:17px;
+  }
+  nav{
+    position:sticky;top:0;z-index:20;background:#fff;
+    display:flex;gap:8px;overflow-x:auto;padding:10px 12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+  }
+  nav button{
+    flex:0 0 auto;border:2px solid var(--red);background:#fff;color:var(--red);
+    padding:8px 18px;border-radius:22px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;
+  }
+  nav button.active{background:var(--red);color:#fff}
+  main{max-width:900px;margin:0 auto;padding:16px 12px}
+  .section-title{font-size:22px;margin:18px 4px 10px;color:var(--red-dark);border-right:5px solid var(--gold);padding-right:10px}
+  .grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
+  .item{
+    background:var(--card);border-radius:16px;overflow:hidden;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);display:flex;flex-direction:column;
+  }
+  .item .pic{
+    height:130px;display:flex;align-items:center;justify-content:center;
+    font-size:68px;background:linear-gradient(135deg,#ffe3b3,#ffc66b);
+  }
+  .item .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .item h3{font-size:18px}
+  .item .desc{font-size:14px;color:#6b5a50;flex:1}
+  .row{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+  .price{font-size:20px;font-weight:800;color:var(--red)}
+  .add{
+    background:var(--red);color:#fff;border:none;border-radius:12px;
+    padding:9px 16px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;
+  }
+  .add:active{transform:scale(.95)}
+  .info{
+    background:#fff;border-radius:16px;padding:16px;margin:22px 0 10px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);text-align:center;
+  }
+  .info h2{color:var(--red-dark);margin-bottom:6px}
+  footer{text-align:center;font-size:13px;color:#7a6a60;padding:14px}
+
+  /* شريط السلة السفلي */
+  #cartBar{
+    position:fixed;bottom:0;left:0;right:0;z-index:30;
+    background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 16px;box-shadow:0 -3px 14px rgba(0,0,0,.3);
+  }
+  #cartBar .sum{font-size:16px}
+  #cartBar button{
+    background:var(--gold);color:var(--ink);border:none;border-radius:24px;
+    padding:11px 22px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;
+  }
+  .badge{
+    background:var(--red);color:#fff;border-radius:50%;min-width:24px;height:24px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:14px;margin-left:6px;padding:0 6px;
+  }
+
+  /* نافذة السلة */
+  #overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:40;display:none;
+    align-items:flex-end;justify-content:center;
+  }
+  #overlay.show{display:flex}
+  .sheet{
+    background:#fff;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
+    border-radius:22px 22px 0 0;padding:18px 16px 22px;
+  }
+  .sheet h2{color:var(--red-dark);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+  .close{background:none;border:none;font-size:28px;cursor:pointer;color:#555}
+  .cart-line{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:10px 0;border-bottom:1px solid #eee;
+  }
+  .cart-line .name{flex:1;font-weight:700}
+  .cart-line .sub{color:var(--red);font-weight:700;min-width:60px;text-align:left}
+  .qty{display:flex;align-items:center;gap:8px}
+  .qty button{
+    width:32px;height:32px;border-radius:50%;border:2px solid var(--red);
+    background:#fff;color:var(--red);font-size:20px;font-weight:800;cursor:pointer;line-height:1;
+  }
+  .empty{text-align:center;color:#888;padding:26px 0}
+  .total{display:flex;justify-content:space-between;font-size:20px;font-weight:800;margin:14px 0}
+  .field{display:block;width:100%;margin:6px 0;padding:11px 12px;border:2px solid #e3d6c6;border-radius:12px;font-family:inherit;font-size:16px}
+  .wa{
+    display:block;width:100%;background:var(--green);color:#fff;border:none;border-radius:14px;
+    padding:14px;font-family:inherit;font-size:18px;font-weight:800;cursor:pointer;margin-top:10px;
+  }
+  .clear{display:block;width:100%;background:none;border:none;color:#999;margin-top:8px;font-family:inherit;font-size:14px;cursor:pointer}
+  #toast{
+    position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:#222;color:#fff;
+    padding:9px 20px;border-radius:22px;font-size:14px;z-index:50;opacity:0;transition:opacity .25s;pointer-events:none;
+  }
+  #toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🌯</span>
+  <h1>شاورما الشام</h1>
+  <p>طعم الشام الأصيل — طازج وساخن إلى باب بيتك</p>
+  <a class="hero-btn" href="#menu">شاهد القائمة</a>
+</header>
+
+<nav id="tabs"></nav>
+
+<main>
+  <div id="menu"></div>
+
+  <div class="info">
+    <h2>ساعات العمل</h2>
+    <p>يومياً من 11 صباحاً حتى 2 بعد منتصف الليل</p>
+    <p style="margin-top:6px">الدفع عند الاستلام • الأسعار بالدولار الأمريكي ($)</p>
+  </div>
+</main>
+
+<footer>© شاورما الشام — جميع الحقوق محفوظة</footer>
+
+<!-- شريط السلة -->
+<div id="cartBar">
+  <div class="sum">🛒 السلة <span class="badge" id="count">0</span> &nbsp; <b id="barTotal">$0.00</b></div>
+  <button onclick="openCart()">عرض الطلب</button>
+</div>
+
+<!-- نافذة السلة -->
+<div id="overlay" onclick="if(event.target===this)closeCart()">
+  <div class="sheet">
+    <h2>طلبك <button class="close" onclick="closeCart()">×</button></h2>
+    <div id="lines"></div>
+    <div class="total"><span>المجموع</span><span id="sheetTotal">$0.00</span></div>
+    <input class="field" id="cname" placeholder="الاسم">
+    <input class="field" id="caddr" placeholder="العنوان (أو اكتب: استلام من المطعم)">
+    <input class="field" id="cnote" placeholder="ملاحظات (مثلاً: بدون بصل)">
+    <button class="wa" onclick="sendWhatsApp()">إرسال الطلب عبر واتساب 📲</button>
+    <button class="clear" onclick="clearCart()">تفريغ السلة</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ===== إعدادات المطعم: عدّل هنا فقط ===== */
+var WHATSAPP_NUMBER = "963900000000"; // رقم واتساب بالصيغة الدولية بدون + أو أصفار (مثال سوريا: 963 ثم الرقم بدون الصفر)
+var CURRENCY = "$";
+
+/* ===== قائمة الطعام: عدّل الأسماء والأسعار كما تريد ===== */
+var MENU = [
+  { cat:"الشاورما", items:[
+    {id:1, name:"شاورما دجاج عادي", desc:"دجاج متبّل، ثوم، مخلل، بطاطا", price:2.5, emoji:"🌯"},
+    {id:2, name:"شاورما دجاج سوبر", desc:"حجم كبير مع جبنة وصوص خاص", price:3.5, emoji:"🌯"},
+    {id:3, name:"شاورما لحم عادي", desc:"لحم عجل مشوي، طحينة، بصل وبقدونس", price:3.5, emoji:"🥙"},
+    {id:4, name:"شاورما لحم سوبر", desc:"حجم كبير مع بطاطا وطحينة زيادة", price:4.5, emoji:"🥙"},
+    {id:5, name:"شاورما مشكّل", desc:"دجاج ولحم معاً مع صوص الشام", price:4.0, emoji:"🌯"}
+  ]},
+  { cat:"الوجبات", items:[
+    {id:6, name:"وجبة دجاج", desc:"صحن شاورما دجاج مع بطاطا ومخلل وثوم", price:5.0, emoji:"🍛"},
+    {id:7, name:"وجبة لحم", desc:"صحن شاورما لحم مع بطاطا وطحينة", price:6.5, emoji:"🍛"},
+    {id:8, name:"وجبة عائلية", desc:"٥ سندويش مشكّل + بطاطا كبيرة + مشروب", price:18.0, emoji:"🍽️"}
+  ]},
+  { cat:"الجانبية", items:[
+    {id:9,  name:"بطاطا مقلية", desc:"طازجة ومقرمشة", price:1.5, emoji:"🍟"},
+    {id:10, name:"ثوم إضافي", desc:"علبة صغيرة", price:0.5, emoji:"🧄"},
+    {id:11, name:"مخلل مشكّل", desc:"خيار، لفت، فلفل", price:0.75, emoji:"🥒"},
+    {id:12, name:"سلطة عربية", desc:"خيار وبندورة وبقدونس وليمون", price:1.5, emoji:"🥗"}
+  ]},
+  { cat:"المشروبات", items:[
+    {id:13, name:"مشروب غازي", desc:"علبة باردة", price:1.0, emoji:"🥤"},
+    {id:14, name:"عصير ليمون بالنعناع", desc:"طازج", price:1.75, emoji:"🍋"},
+    {id:15, name:"عيران", desc:"لبن بارد منعش", price:1.0, emoji:"🥛"},
+    {id:16, name:"ماء", desc:"عبوة صغيرة", price:0.5, emoji:"💧"}
+  ]}
+];
+
+/* ===== المنطق ===== */
+var cart = {};   // id -> {item, qty}
+var byId = {};
+MENU.forEach(function(c){ c.items.forEach(function(i){ byId[i.id]=i; }); });
+
+function money(n){ return CURRENCY + n.toFixed(2); }
+
+function renderMenu(){
+  var tabs = document.getElementById("tabs");
+  var menu = document.getElementById("menu");
+  var th = '<button class="active" data-t="all" onclick="filterCat(\'all\',this)">الكل</button>';
+  var mh = "";
+  MENU.forEach(function(c,ci){
+    th += '<button data-t="'+ci+'" onclick="filterCat('+ci+',this)">'+c.cat+'</button>';
+    mh += '<div class="cat" data-c="'+ci+'"><h2 class="section-title">'+c.cat+'</h2><div class="grid">';
+    c.items.forEach(function(i){
+      mh += '<div class="item"><div class="pic">'+i.emoji+'</div><div class="body">'
+          + '<h3>'+i.name+'</h3><div class="desc">'+i.desc+'</div>'
+          + '<div class="row"><span class="price">'+money(i.price)+'</span>'
+          + '<button class="add" onclick="addItem('+i.id+')">+ أضف</button></div>'
+          + '</div></div>';
+    });
+    mh += '</div></div>';
+  });
+  tabs.innerHTML = th;
+  menu.innerHTML = mh;
+}
+
+function filterCat(c, btn){
+  var btns = document.querySelectorAll("#tabs button");
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove("active");
+  btn.classList.add("active");
+  var cats = document.querySelectorAll(".cat");
+  for(var j=0;j<cats.length;j++){
+    cats[j].style.display = (c==="all" || String(c)===cats[j].getAttribute("data-c")) ? "" : "none";
+  }
+  window.scrollTo({top: document.getElementById("menu").offsetTop - 60, behavior:"smooth"});
+}
+
+function toast(msg){
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(function(){ t.classList.remove("show"); }, 1400);
+}
+
+function addItem(id){
+  if(!cart[id]) cart[id] = {item:byId[id], qty:0};
+  cart[id].qty++;
+  update(); save();
+  toast("تمت إضافة: " + byId[id].name);
+}
+
+function changeQty(id, d){
+  if(!cart[id]) return;
+  cart[id].qty += d;
+  if(cart[id].qty <= 0) delete cart[id];
+  update(); save();
+}
+
+function clearCart(){
+  cart = {}; update(); save();
+}
+
+function totals(){
+  var n = 0, s = 0;
+  for(var k in cart){ n += cart[k].qty; s += cart[k].qty * cart[k].item.price; }
+  return {n:n, s:s};
+}
+
+function update(){
+  var t = totals();
+  document.getElementById("count").textContent = t.n;
+  document.getElementById("barTotal").textContent = money(t.s);
+  document.getElementById("sheetTotal").textContent = money(t.s);
+  var h = "";
+  var keys = Object.keys(cart);
+  if(!keys.length){
+    h = '<div class="empty">السلة فارغة، أضف أصنافاً من القائمة 🌯</div>';
+  } else {
+    keys.forEach(function(k){
+      var c = cart[k];
+      h += '<div class="cart-line"><div class="name">'+c.item.name+'</div>'
+         + '<div class="qty"><button onclick="changeQty('+k+',-1)">−</button><b>'+c.qty+'</b>'
+         + '<button onclick="changeQty('+k+',1)">+</button></div>'
+         + '<div class="sub">'+money(c.qty*c.item.price)+'</div></div>';
+    });
+  }
+  document.getElementById("lines").innerHTML = h;
+}
+
+function openCart(){ document.getElementById("overlay").classList.add("show"); }
+function closeCart(){ document.getElementById("overlay").classList.remove("show"); }
+
+function sendWhatsApp(){
+  var t = totals();
+  if(!t.n){ toast("السلة فارغة"); return; }
+  var name = document.getElementById("cname").value.trim();
+  var addr = document.getElementById("caddr").value.trim();
+  var note = document.getElementById("cnote").value.trim();
+  var msg = "السلام عليكم، أريد طلب من شاورما الشام:\n\n";
+  Object.keys(cart).forEach(function(k){
+    var c = cart[k];
+    msg += "• " + c.item.name + " × " + c.qty + " = " + money(c.qty*c.item.price) + "\n";
+  });
+  msg += "\nالمجموع: " + money(t.s);
+  if(name) msg += "\nالاسم: " + name;
+  if(addr) msg += "\nالعنوان: " + addr;
+  if(note) msg += "\nملاحظات: " + note;
+  var url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
+  window.open(url, "_blank");
+}
+
+function save(){
+  try{
+    var o = {}; for(var k in cart) o[k] = cart[k].qty;
+    localStorage.setItem("alsham_cart", JSON.stringify(o));
+  }catch(e){}
+}
+function load(){
+  try{
+    var o = JSON.parse(localStorage.getItem("alsham_cart") || "{}");
+    for(var k in o){ if(byId[k]) cart[k] = {item:byId[k], qty:o[k]}; }
+  }catch(e){}
+}
+
+renderMenu(); load(); update();
+</script>
+</body>
+  </html>
